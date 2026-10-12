@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keys – play any instrument</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{--bg:#d9d3c8;--panel:#cbc4b7;--tab:#e6e1d6;--tabon:#3a2d24;--tabtx:#f1ebdc;--text:#2a211b;--muted:#6b5d4c;--brass:#7a5a1c;--line:#a89d8b;--bk:#1d1612;--on:#d9b45a;--w:52px;--bw:32px;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1612;--panel:#2a201a;--tab:#3a2d24;--tabon:#c7a24b;--tabtx:#1d1612;--text:#eadfce;--muted:#a8977f;--brass:#c7a24b;--line:#4a3a2e;--bk:#120e0b}}
+:root[data-theme="dark"]{--bg:#1d1612;--panel:#2a201a;--tab:#3a2d24;--tabon:#c7a24b;--tabtx:#1d1612;--text:#eadfce;--muted:#a8977f;--brass:#c7a24b;--line:#4a3a2e;--bk:#120e0b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 "Libre Caslon Text",Georgia,"Times New Roman",serif;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+main{max-width:1080px;margin:0 auto;padding:18px 14px 30px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:44px;height:44px;color:var(--brass);flex:none}
+h1{font:italic 400 34px/1 "Libre Caslon Text",Georgia,serif;margin:0;letter-spacing:-.02em}
+.sub{margin:5px 0 0;color:var(--muted);font-size:13px}
+button,select,.tab{font:inherit;color:var(--text);cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,.tab:focus-within{outline:2px solid var(--brass);outline-offset:2px}
+.link{background:none;border:0;border-bottom:1px solid var(--muted);padding:2px 0;color:var(--muted);font-size:13px}
+.rail{display:flex;flex-wrap:wrap;gap:8px}
+.tab{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 14px 6px;background:var(--tab);border:1px solid var(--line);border-bottom-width:4px;border-radius:2px;transition:transform .08s,border-bottom-width .08s}
+.tab .ico{width:20px;height:20px;flex:none;color:var(--brass)}
+.tab[aria-pressed=true]{background:var(--tabon);color:var(--tabtx);border-bottom-width:1px;transform:translateY(3px)}
+.tab[aria-pressed=true] .ico{color:var(--tabtx)}
+.tab.add{background:transparent;border-style:dashed;border-bottom-width:1px;color:var(--muted)}
+.hide{display:none}
+#msg{color:var(--muted);font-size:13px;min-height:20px;margin:12px 0 0;font-style:italic}
+#sample{display:none;margin:4px 0 0;padding:6px 0 6px 14px;border-left:3px solid var(--brass)}
+.row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.row label{display:flex;gap:8px;align-items:center;font-size:14px}
+select,#sample button{background:var(--tab);border:1px solid var(--line);border-radius:2px;padding:6px 8px;min-height:36px}
+input[type=range]{accent-color:var(--brass);width:130px}
+.desk{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 10px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#playing{font:italic 400 24px/1 "Libre Caslon Text",Georgia,serif;min-height:26px;color:var(--brass)}
+#scroll{width:100%;margin:0 0 8px;accent-color:var(--brass)}
+#kbwrap{overflow:hidden;background:#0d0a08;padding-top:12px;border-radius:2px;box-shadow:0 3px 0 var(--line)}
+#kb{position:relative;height:240px;touch-action:none}
+.key{position:absolute;top:0;touch-action:none;cursor:pointer}
+.white{height:100%;width:var(--w);background:linear-gradient(90deg,#d8d0bb,#f4efe2 12%,#f4efe2 88%,#d8d0bb);border:0;border-right:1px solid #8d836f;border-radius:0 0 2px 2px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:11px;font-style:italic;color:#7a705c}
+.black{height:63%;width:var(--bw);background:linear-gradient(90deg,#060403,#2a221c 30%,#2a221c 70%,#060403);border-radius:0 0 2px 2px;z-index:2;box-shadow:0 6px 0 -1px #000}
+.white.on{background:linear-gradient(90deg,#b9964a,#e0be6a 15%,#e0be6a 85%,#b9964a);color:#2a211b;height:98%}
+.black.on{background:#c7a24b;height:61%}
+.tip{color:var(--muted);font-size:13px;margin:14px 0 0;max-width:68ch}
+@media (max-width:640px){:root{--w:44px;--bw:28px}#kb{height:210px}h1{font-size:28px}.logo{width:36px;height:36px}.tab{flex:1 1 calc(50% - 8px)}}
+@media (max-height:480px) and (orientation:landscape){#kb{height:calc(100vh - 160px)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="piano" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13v4m4-4v4m4-4v4M2 13h20m0-1.5A3.5 3.5 0 0 0 18.5 8a3.52 3.52 0 0 1-3.173-2A7 7 0 0 0 2 9v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2zM6 13v4"/></symbol></svg>
+<main>
+<header>
+ <div class="brand"><svg class="logo" aria-hidden="true"><use href="#piano"/></svg><div><h1>Keys</h1><p class="sub">Play a built-in instrument, or load your own recording.</p></div></div>
+ <button class="link" id="theme">Switch light and dark</button>
+</header>
+
+<div class="rail" id="insts" role="group" aria-label="Instruments"></div>
+<div class="rail" style="margin-top:8px"><label class="tab add"><svg class="ico" aria-hidden="true"><use href="#piano"/></svg>Add your own sound<input type="file" id="file" accept="audio/*" class="hide"></label></div>
+<div id="msg" role="status"></div>
+<div id="sample">
+ <div class="row">
+  <label>Original pitch <select id="root"></select></label>
+  <label><input type="checkbox" id="loop"> Loop while held</label>
+  <button id="prev">Preview</button>
+  <button id="rm">Remove sound</button>
+ </div>
+</div>
+
+<div class="desk">
+ <div class="row">
+  <label>Volume <input type="range" id="vol" min="0" max="1" step=".01" value=".8"></label>
+  <label>Reverb <input type="range" id="rev" min="0" max="1" step=".01" value=".25"></label>
+  <label><input type="checkbox" id="sus"> Sustain</label>
+ </div>
+ <div id="playing" aria-live="polite"></div>
+</div>
+
+<input type="range" id="scroll" min="0" max="1000" value="500" aria-label="Scroll the keyboard">
+<div id="kbwrap"><div id="kb"></div></div>
+<p class="tip">Tap, hold, or slide across the keys. On a computer, A to ; play notes and Z / X change octave. Turning your phone sideways gives you a bigger keyboard.</p>
+</main>
+<script>
+const NAMES=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const nm=m=>NAMES[m%12]+(Math.floor(m/12)-1);
+const $=id=>document.getElementById(id);
+const INST=[
+ {id:'piano',name:'Grand piano',parts:[['triangle',1,.55],['sine',2,.25],['sine',3,.12],['sine',4,.06]],a:.003,decay:1.3,s:0,r:.4,lp:6},
+ {id:'ep',name:'Electric piano',parts:[['sine',1,.7],['sine',2,.15],['sine',7,.06]],a:.004,decay:1.1,s:.15,r:.3,lp:8},
+ {id:'organ',name:'Organ',parts:[['sine',1,.4],['sine',2,.3],['sine',3,.2],['sine',4,.12],['sine',6,.08]],a:.012,r:.08,lp:20},
+ {id:'synth',name:'Synth lead',parts:[['sawtooth',1,.3,-8],['sawtooth',1,.3,8],['square',.5,.25]],a:.01,r:.2,lp:4},
+ {id:'strings',name:'Strings',parts:[['sawtooth',1,.35,-10],['sawtooth',1,.35,10],['sawtooth',2,.1,3]],a:.35,r:.7,lp:3},
+ {id:'box',name:'Music box',parts:[['sine',1,.6],['sine',3,.15],['sine',5.4,.1]],a:.002,decay:.5,s:0,r:.3,lp:12,shift:2},
+ {id:'pluck',name:'Pluck',parts:[['sawtooth',1,.45],['triangle',2,.25]],a:.002,decay:.3,s:0,r:.2,lp:4},
+ {id:'chip',name:'8-bit',parts:[['square',1,.3]],a:.003,decay:.6,s:.6,r:.06,lp:20}
+];
+let cur=INST[0],ctx,bus,wet,master,uid=0;
+const voices=new Map(),held=new Set();
+
+function ensure(){
+ if(!ctx){
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  master=ctx.createGain();master.gain.value=+$('vol').value;
+  const comp=ctx.createDynamicsCompressor();master.connect(comp);comp.connect(ctx.destination);
+  bus=ctx.createGain();bus.connect(master);
+  const len=ctx.sampleRate*2,ib=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let c=0;c<2;c++){const d=ib.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5)}
+  const cv=ctx.createConvolver();cv.buffer=ib;wet=ctx.createGain();wet.gain.value=+$('rev').value;
+  bus.connect(cv);cv.connect(wet);wet.connect(master);
+ }
+ if(ctx.state!=='running')ctx.resume();
+}
+function fin(g,srcs,r){
+ return{stop(){const n=ctx.currentTime;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.setTargetAtTime(0,n,r/3);
+  srcs.forEach(s=>{try{s.stop(n+r+.2)}catch(e){}});setTimeout(()=>g.disconnect(),(r+.4)*1000)}}
+}
+function synthVoice(i,m){
+ const t=ctx.currentTime,f=440*2**((m-69)/12)*(i.shift||1);
+ const g=ctx.createGain(),lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=Math.min(16000,Math.max(900,f*i.lp));
+ const os=i.parts.map(([ty,mu,ga,dt=0])=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=ty;o.frequency.value=f*mu;o.detune.value=dt;og.gain.value=ga;o.connect(og);og.connect(lp);o.start(t);return o});
+ lp.connect(g);g.connect(bus);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.5,t+i.a);
+ if(i.decay)g.gain.setTargetAtTime(.5*i.s,t+i.a,i.decay*2**(-(m-60)/36));
+ return fin(g,os,i.r);
+}
+function sampleVoice(i,m){
+ const t=ctx.currentTime,s=ctx.createBufferSource(),g=ctx.createGain();
+ s.buffer=i.buf;s.loop=i.loop;s.playbackRate.value=2**((m-i.root)/12);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.8,t+.005);
+ s.connect(g);g.connect(bus);s.start(t);s.onended=()=>g.disconnect();
+ return fin(g,[s],.25);
+}
+function on(src,m){
+ ensure();off(src);
+ voices.set(src,{m,v:cur.buf?sampleVoice(cur,m):synthVoice(cur,m)});
+ paint();
+}
+function off(src){
+ const x=voices.get(src);if(!x)return;
+ voices.delete(src);
+ if($('sus').checked)held.add(x.v);else x.v.stop();
+ paint();
+}
+$('sus').onchange=e=>{if(!e.target.checked){held.forEach(v=>v.stop());held.clear()}};
+
+// keyboard UI
+const LO=36,HI=96,kb=$('kb'),keyEls={};
+let wi=0;
+for(let m=LO;m<=HI;m++){
+ const k=document.createElement('div'),blk=[1,3,6,8,10].includes(m%12);
+ k.dataset.m=m;k.setAttribute('aria-label',nm(m));
+ if(blk){k.className='key black';k.style.left=`calc(var(--w)*${wi} - var(--bw)/2)`}
+ else{k.className='key white';k.style.left=`calc(var(--w)*${wi})`;if(m%12===0)k.textContent=nm(m);wi++}
+ kb.appendChild(k);keyEls[m]=k;
+}
+kb.style.width=`calc(var(--w)*${wi})`;
+function paint(){
+ const a=new Set([...voices.values()].map(x=>x.m));
+ for(const m in keyEls)keyEls[m].classList.toggle('on',a.has(+m));
+ $('playing').textContent=[...a].sort((x,y)=>x-y).map(nm).join('  ');
+}
+const wrap=$('kbwrap'),sc=$('scroll');
+const maxS=()=>Math.max(0,kb.offsetWidth-wrap.clientWidth);
+sc.oninput=()=>{wrap.scrollLeft=maxS()*sc.value/1000};
+function centre(){const i=(60-LO)-[...Array(60-LO)].filter((_,j)=>[1,3,6,8,10].includes((LO+j)%12)).length;
+ wrap.scrollLeft=Math.max(0,Math.min(maxS(),i*parseFloat(getComputedStyle(kb).getPropertyValue('--w')||52)-wrap.clientWidth/2+30));sc.value=maxS()?wrap.scrollLeft/maxS()*1000:0}
+addEventListener('resize',centre);
+
+const under=(x,y)=>{const e=document.elementFromPoint(x,y);return e&&e.closest&&e.closest('.key')};
+kb.addEventListener('pointerdown',e=>{const k=e.target.closest('.key');if(!k)return;e.preventDefault();on('p'+e.pointerId,+k.dataset.m)});
+kb.addEventListener('pointermove',e=>{
+ const id='p'+e.pointerId,x=voices.get(id);if(!x)return;
+ const k=under(e.clientX,e.clientY);if(k&&+k.dataset.m!==x.m)on(id,+k.dataset.m);
+});
+['pointerup','pointercancel'].forEach(t=>addEventListener(t,e=>off('p'+e.pointerId)));
+addEventListener('blur',()=>[...voices.keys()].forEach(off));
+kb.addEventListener('contextmenu',e=>e.preventDefault());
+
+// computer keyboard
+const KM='awsedftgyhujkolp;';let base=60;
+addEventListener('keydown',e=>{
+ if(e.repeat||e.ctrlKey||e.metaKey||e.altKey||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)&&e.target.type!=='range'&&e.target.type!=='checkbox')return;
+ const k=e.key.toLowerCase();
+ if(k==='z'){base=Math.max(36,base-12);return}
+ if(k==='x'){base=Math.min(84,base+12);return}
+ const i=KM.indexOf(k);if(i>=0)on('k'+k,base+i);
+});
+addEventListener('keyup',e=>off('k'+e.key.toLowerCase()));
+
+// instruments UI
+const list=[...INST];
+function renderInsts(){
+ const box=$('insts');box.innerHTML='';
+ list.forEach(i=>{const b=document.createElement('button');b.setAttribute('aria-pressed',i===cur);
+  b.className='tab';b.innerHTML='<svg class="ico" aria-hidden="true"><use href="#piano"/></svg><span class="n"></span>';b.querySelector('.n').textContent=i.name;
+  b.onclick=()=>{cur=i;renderInsts()};box.appendChild(b)});
+ $('sample').style.display=cur.buf?'block':'none';
+ if(cur.buf){$('root').value=cur.root;$('loop').checked=cur.loop}
+}
+const rs=$('root');for(let m=36;m<=96;m++)rs.add(new Option(nm(m)+(m===60?' (middle C)':''),m));
+rs.onchange=()=>cur.root=+rs.value;
+$('loop').onchange=e=>cur.loop=e.target.checked;
+$('prev').onclick=()=>{on('prev',cur.root);setTimeout(()=>off('prev'),900)};
+$('rm').onclick=()=>{list.splice(list.indexOf(cur),1);cur=INST[0];renderInsts();$('msg').textContent='Sound removed.'};
+$('file').onchange=async e=>{
+ const f=e.target.files[0];e.target.value='';if(!f)return;
+ const msg=$('msg');msg.textContent='Loading '+f.name+'…';
+ try{
+  ensure();
+  const ab=await f.arrayBuffer();
+  const buf=await new Promise((ok,no)=>ctx.decodeAudioData(ab,ok,no));
+  const i={id:'u'+(++uid),name:f.name.replace(/\.[^.]+$/,'').slice(0,28),buf,root:60,loop:buf.duration<2};
+  list.push(i);cur=i;renderInsts();
+  msg.textContent=`Loaded "${i.name}" (${buf.duration.toFixed(1)}s). Set its original pitch below so the keys sound right.`;
+ }catch(err){msg.textContent="Couldn't read that file. Try an MP3, WAV, M4A or OGG audio file."}
+};
+$('vol').oninput=e=>{if(master)master.gain.value=+e.target.value};
+$('rev').oninput=e=>{if(wet)wet.gain.value=+e.target.value};
+$('theme').onclick=()=>{const r=document.documentElement,d=matchMedia('(prefers-color-scheme:dark)').matches;
+ const now=r.dataset.theme||(d?'dark':'light');r.dataset.theme=now==='dark'?'light':'dark'};
+
+renderInsts();centre();
+</script>
+</body>
+</html>
